@@ -1,5 +1,5 @@
 ---
-description: Show what's in the Company Brain — company name, last updated date, section counts, and any gaps detected.
+description: Show what is in the Company Brain — company name, last updated date, section counts, and any gaps detected.
 ---
 
 # /brain-status

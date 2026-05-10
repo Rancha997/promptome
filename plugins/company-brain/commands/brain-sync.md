@@ -1,3 +1,7 @@
+---
+description: Rebuild the Company Brain context file from all source docs. Run after heavy updates or when context feels stale.
+---
+
 # /brain-sync
 
 Rebuild the Company Brain context file from all source docs.

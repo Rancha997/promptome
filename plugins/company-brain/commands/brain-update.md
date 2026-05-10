@@ -1,3 +1,7 @@
+---
+description: Save a specific piece of knowledge to the Company Brain right now. Invoked manually or via passive save suggestions.
+---
+
 # /brain-update
 
 Save something specific to the Company Brain right now.
