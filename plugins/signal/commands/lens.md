@@ -1,3 +1,7 @@
+---
+description: Update your opportunity lens. Tell Claude what to change for a quick edit, or run /lens for a full strategic reset and interview.
+---
+
 # /lens
 
 Review and update your opportunity lens.

@@ -1,3 +1,7 @@
+---
+description: Run a scan now. Fetches your sources, scores signals against your lens, and rebuilds your Live Artifact dashboard. Also runs automatically at 8am daily.
+---
+
 # /scan
 
 Run the signal now.

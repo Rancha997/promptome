@@ -1,3 +1,7 @@
+---
+description: Full Signal onboarding in one session. Runs the lens builder interview, creates your daily 8am scheduled scan, and builds your Live Artifact dashboard.
+---
+
 # /setup-signal
 
 Run the full Signal onboarding in one session.
