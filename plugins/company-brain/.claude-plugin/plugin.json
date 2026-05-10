@@ -1,0 +1,11 @@
+{
+  "name": "company-brain",
+  "description": "Gives Claude persistent knowledge about your company. Every conversation starts with full context. Shared across your team via Notion, Google Drive, or Confluence.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Darko Rančić",
+    "email": "contact@darkorancic.com"
+  },
+  "homepage": "https://promptome.io",
+  "license": "MIT"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "signal",
+  "description": "Monitors the web daily for opportunities relevant to your work. Scored against your personal lens. Surfaces results in a live dashboard.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Darko Rančić",
+    "email": "contact@darkorancic.com"
+  },
+  "homepage": "https://promptome.io",
+  "license": "MIT"
+}
