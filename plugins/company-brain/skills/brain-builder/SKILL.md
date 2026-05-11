@@ -10,10 +10,10 @@ Handles first-time installation and joining an existing Company Brain. Run this 
 
 At the start of every session:
 
-1. Check if `config.json` exists in the plugin folder.
-2. If **NO** → run this skill immediately. Do not greet the user first.
-3. If **YES** → read `config.json`, fetch the context file from the stored platform location using the appropriate MCP, load it silently into context, then greet the user briefly:
+1. Search Notion for a page with "Brain — Context" in the title using the Notion MCP.
+2. If found → fetch the page, load it silently into context, greet briefly:
    > "Company Brain loaded — [company name], last updated [date]. What are we working on?"
+3. If not found → run this skill immediately. Do not greet the user first.
 
 Never summarize the brain contents unprompted. Just confirm it loaded and move on.
 
@@ -45,63 +45,41 @@ After every response, silently evaluate whether the conversation just produced s
 
 ## Platform Access
 
-- Platform type and brain location are stored in `config.json`.
-- Use the matching MCP for all reads and writes:
-  - Notion → Notion MCP
-  - Google Drive → Google Drive MCP
-  - Confluence → Confluence MCP
-- Always read fresh from the platform — never cache locally beyond the current session.
-- `config.json` is the only local file. All brain content lives on the platform.
+Use the Notion MCP for all reads and writes. Always read fresh from Notion — never cache locally beyond the current session.
 
 ---
 
 ## Step 1: Detect Connected Platform MCPs
 
-Check which of the following platform MCPs are currently connected in Cowork:
+Check whether the Notion MCP is connected in Cowork.
 
-- Notion MCP
-- Google Drive MCP
-- Confluence MCP
+**If not connected:**
 
-**If none are connected:**
+> "To use Company Brain, you need to connect Notion. Go to Claude Settings → Connections and connect Notion. Then come back and I'll set up your brain."
 
-> "To use Company Brain, you need to connect at least one doc platform. Go to Claude Settings → Connections and connect Notion, Google Drive, or Confluence. Then come back and I'll set up your brain."
-
-Stop here. Do not proceed until at least one platform MCP is connected.
-
-**If exactly one is connected:** use it. Ask no questions about platform.
-
-**If two or more are connected:** ask once:
-
-> "I can see you have [list each connected platform] connected. Which one does your team use for the Company Brain?"
-
-Wait for the user's answer. Use that platform for all steps that follow.
+Stop here. Do not proceed until the Notion MCP is connected.
 
 ---
 
 ## Step 2: Search for an Existing Brain
 
-Search the chosen platform for an existing Company Brain document:
-
-- **Notion** — search for a page titled "Company Brain — Context" or with tag/property `company-brain`
-- **Google Drive** — search for a file named "Company Brain — Context"
-- **Confluence** — search for a page with label `company-brain`
+Search Notion for a page with "Brain — Context" in the title.
 
 **If exactly one result is found:**
 
 > "Found it — Company Brain for [company name], last updated [date][, created by [author] if available]. Connect to this one?"
 
-If the user confirms → save to `config.json` → load the brain → greet the user → done. Skip the interview entirely.
+If the user confirms → fetch the page, load into context, greet the user → done. Skip the interview entirely.
 
 **If multiple results are found:** show a numbered list with title and last-modified date for each:
 
-> "I found [N] Company Brain documents. Which one is yours?"
+> "I found [N] Company Brain pages. Which one is yours?"
 
-User picks one → save to `config.json` → load → done.
+User picks one → load → done.
 
 **If nothing is found:**
 
-> "No existing Company Brain found in your [platform]. I'll create one now — this takes about 5 minutes."
+> "No existing Company Brain found in your Notion. I'll create one now — this takes about 5 minutes."
 
 Proceed to Step 3.
 
@@ -215,26 +193,8 @@ Be dense and specific — this file is for Claude to read, not humans. Use bulle
 
 ---
 
-## Step 5: Save Config and Confirm
-
-Write `config.json` to the plugin folder:
-
-```json
-{
-  "platform": "notion",
-  "brain_id": "[root page id]",
-  "brain_url": "[root page url]",
-  "context_id": "[context page id]",
-  "context_url": "[context page url]",
-  "company_name": "[company name]",
-  "installed_by": "[user name from interview]",
-  "installed_at": "YYYY-MM-DD",
-  "teammates": []
-}
-```
-
-`config.json` stores both `brain_id` (root) and `context_id` (the lean page Claude loads every session). Claude fetches `context_url` on session start, not the root.
+## Step 5: Confirm
 
 Confirm to the user:
 
-> "Company Brain is ready. Claude now has full context about [company name] in every session. Share the brain URL with your team: [brain_url]. When a teammate installs this plugin, I'll find the brain automatically."
+> "Brain is ready. Claude will find it automatically at the start of every session by searching your Notion workspace. Share this page URL with teammates: [brain root page URL]. When they install the plugin, Claude will find the brain automatically."

@@ -6,9 +6,8 @@ description: Show what is in the Company Brain — company name, last updated da
 
 Show what's in the Company Brain and when it was last updated.
 
-Claude reads the current context file and reports:
-- Company name and brain location
-- Last updated date and by whom
+Claude searches Notion for the Brain — Context page, then reports:
+- Company name and last updated date
 - Count of decisions, projects, open questions
 - Any sections that look thin or outdated
 - Teammates who have connected

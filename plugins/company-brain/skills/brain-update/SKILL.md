@@ -10,7 +10,7 @@ Saves a specific piece of knowledge to the Company Brain. Invoked when the user 
 
 ## Steps
 
-1. **Read `config.json`** to get the platform type and brain location.
+1. **Find the brain** — search Notion for the page with "Brain — Context" in the title to get the brain location.
 
 2. **Extract what to save** from the current conversation:
    - Identify the specific decision, convention, rejection, status change, or new fact

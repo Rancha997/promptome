@@ -10,13 +10,15 @@ Full rebuild of the Company Brain context file from all source docs. Invoked by 
 
 ## Steps
 
-1. **Read `config.json`** to get the platform type and brain location.
+1. **Find the brain** — search Notion for the page with "Brain — Context" in the title to get the brain location.
 
-2. **Fetch all Company Brain source docs** from the platform:
-   - "Company Brain — Stack & Architecture"
-   - "Company Brain — Decision Log"
-   - "Company Brain — Projects"
-   - Any other docs linked from the context file
+2. **Fetch all section pages** from the brain using the Quick Index URLs in the Context page:
+   - Identity & Strategy (and its child pages)
+   - Projects (and all project subfolders)
+   - Infrastructure (and all system pages)
+   - Decisions Log
+   - People & Conventions (and its child pages)
+   - Open Questions
 
 3. **Re-read the full content** of each source doc.
 

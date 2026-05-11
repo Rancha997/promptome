@@ -4,12 +4,13 @@
 
 At the start of every session:
 
-1. Check if `config.json` exists in the plugin folder.
-2. If NO → run /setup-brain immediately. Do not greet the user first.
-3. If YES → read `config.json`, fetch the context file from the stored platform location using the appropriate MCP, load it silently, then greet:
-   > "Company Brain loaded — [company name], last updated [date]. What are we working on?"
+1. Search Notion for a page with "Brain — Context" in the title using the Notion MCP
+2. If found → fetch the page, load it silently into context, greet:
+   > "[Company name] Brain loaded — last updated [date]. What are we working on?"
+3. If not found → run /setup-brain immediately. Do not greet first.
 
-Never summarize the brain contents unprompted. Just confirm it loaded.
+Never cache the brain URL locally. Always search fresh each session.
+The search takes 1-2 seconds — this is acceptable.
 
 ## Passive Knowledge Monitoring
 
@@ -34,5 +35,4 @@ Yes → invoke /brain-update immediately. No → drop it, never mention again th
 
 ## Platform Access
 
-Platform and brain location stored in `config.json`. Use matching MCP for all reads/writes.
-Always read fresh from the platform — never cache locally beyond current session.
+Use the Notion MCP for all reads and writes. Always read fresh from Notion — never cache locally beyond the current session.
