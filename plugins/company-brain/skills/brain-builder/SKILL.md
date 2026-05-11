@@ -156,12 +156,26 @@ Page titles are plain text. Icons are set via the `icon` property only — never
 
 Must follow this order:
 
-1. Create the root page **[Company Name] Brain**
-2. Create all section folders as child pages of root
-3. Create all leaf pages as children of their section
-4. For each project mentioned in the interview, create a project subfolder under **Projects/** with **Overview & Status** and **Decisions** child pages
-5. For each system mentioned in the interview, create one page under **Infrastructure/**
-6. **Last** — create the **Context** page and populate the Quick Index with the actual Notion URLs of every page just created
+1. Create the root page — title: `[Company Name] Brain`, icon: `🧠`
+2. Create section pages as children of root — use the icon and plain-text title from the table below
+3. Create all leaf pages as children of their section — no icon required on leaf pages
+4. For each project mentioned in the interview, create a project subfolder under **Projects** (icon: `🚀`) with **Overview & Status** and **Decisions** child pages
+5. For each system mentioned in the interview, create one page under **Infrastructure** (icon: `⚙️`)
+6. **Last** — create the **Context** page (icon: `📋`) and populate the Quick Index with the actual Notion URLs of every page just created
+
+**Icon reference for section pages:**
+
+| Title (plain text)     | Icon |
+|------------------------|------|
+| Context                | 📋   |
+| Identity & Strategy    | 🏢   |
+| Projects               | 🚀   |
+| Infrastructure         | ⚙️   |
+| Decisions Log          | 📋   |
+| People & Conventions   | 👥   |
+| Open Questions         | ❓   |
+
+When calling the Notion MCP to create any page: pass the title as plain text and set the icon via the `icon` property. Never embed emoji in the title string.
 
 The Context page is created last so it can contain real URLs for all other pages. Use the Notion MCP to get the URL of each created page and write it into the Quick Index.
 
