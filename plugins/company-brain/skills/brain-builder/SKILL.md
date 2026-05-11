@@ -128,26 +128,28 @@ After the interview, create the following Notion folder structure. Follow the cr
 
 ### Folder Structure
 
+Page titles are plain text. Icons are set via the `icon` property only — never include emoji in the title string.
+
 ```
-🧠 [Company Name] Brain/          ← root page
-├── 📋 Context                    ← agent-optimized, loads every session
-├── 🏢 Identity & Strategy/
+[Company Name] Brain/             ← root page          icon: 🧠
+├── Context                       ← loads every session icon: 📋
+├── Identity & Strategy/                                icon: 🏢
 │   ├── Who We Are & Thesis
 │   ├── Strategic Bets
 │   └── Rejected Directions
-├── 🚀 Projects/
+├── Projects/                                           icon: 🚀
 │   └── [one subfolder per project with]:
 │       ├── Overview & Status
 │       └── Decisions
-├── ⚙️ Infrastructure/
+├── Infrastructure/                                     icon: ⚙️
 │   └── [one page per system]
-├── 📋 Decisions Log              ← flat, all decisions newest first
-├── 👥 People & Conventions/
+├── Decisions Log                 ← flat, newest first  icon: 📋
+├── People & Conventions/                               icon: 👥
 │   ├── Team
 │   ├── Publishing Standards
 │   ├── Content Voice
 │   └── Outreach Rules
-└── ❓ Open Questions
+└── Open Questions                                      icon: ❓
 ```
 
 ### Creation Sequence
