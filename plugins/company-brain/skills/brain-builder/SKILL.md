@@ -124,59 +124,78 @@ Ask questions one at a time. Wait for each answer before asking the next. Ask a 
 
 ## Step 4: Build the Brain
 
-After the interview, create two things in the chosen platform.
+After the interview, create the following Notion folder structure. Follow the creation sequence exactly.
 
-### A — Agent Context File (fast-load layer)
-
-Create a doc/page titled **"Company Brain — Context"** with this exact structure:
+### Folder Structure
 
 ```
-# Company Brain — [Company Name]
+🧠 [Company Name] Brain/          ← root page
+├── 📋 Context                    ← agent-optimized, loads every session
+├── 🏢 Identity & Strategy/
+│   ├── Who We Are & Thesis
+│   ├── Strategic Bets
+│   └── Rejected Directions
+├── 🚀 Projects/
+│   └── [one subfolder per project with]:
+│       ├── Overview & Status
+│       └── Decisions
+├── ⚙️ Infrastructure/
+│   └── [one page per system]
+├── 📋 Decisions Log              ← flat, all decisions newest first
+├── 👥 People & Conventions/
+│   ├── Team
+│   ├── Publishing Standards
+│   ├── Content Voice
+│   └── Outreach Rules
+└── ❓ Open Questions
+```
+
+### Creation Sequence
+
+Must follow this order:
+
+1. Create the root page **[Company Name] Brain**
+2. Create all section folders as child pages of root
+3. Create all leaf pages as children of their section
+4. For each project mentioned in the interview, create a project subfolder under **Projects/** with **Overview & Status** and **Decisions** child pages
+5. For each system mentioned in the interview, create one page under **Infrastructure/**
+6. **Last** — create the **Context** page and populate the Quick Index with the actual Notion URLs of every page just created
+
+The Context page is created last so it can contain real URLs for all other pages. Use the Notion MCP to get the URL of each created page and write it into the Quick Index.
+
+### Context Page Format
+
+Populate the Context page with this exact structure:
+
+```markdown
+# [Company Name] Brain — Context
 Last updated: YYYY-MM-DD
-Created by: [user]
-Platform: [notion|drive|confluence]
 
 ## Quick Index
-[One line per section — what's in it, so Claude can navigate fast]
+[one line per section + direct Notion URL to each page]
+- Identity & Strategy: [url]
+- Projects: [url]
+  - [Project Name]: [url] (one line per project)
+- Infrastructure: [url]
+  - [System Name]: [url] (one line per system)
+- Decisions Log: [url]
+- People & Conventions: [url]
+- Open Questions: [url]
 
-## Identity
-- What we build, who for, why
-- Core positioning (current)
-- What we are NOT building
+## Identity (compressed)
+[5-7 bullets — what we build, who for, operating principles, what we are NOT]
 
-## Stack & Infrastructure
-[Per system: name, what it does, key tech, key decisions]
+## Active Projects (compressed)
+[one line per project: name | status | next milestone]
 
-## Active Projects
-[Per project: name, status, current state, next milestone, key constraints]
+## Critical / Urgent
+[anything time-sensitive: deadlines, broken systems, migration alerts]
 
-## Decisions Log
-[Date | Decision | Why | What was rejected — most recent first]
-
-## Strategy & Monetization
-[Current bets, revenue model, distribution approach, key risks accepted]
-
-## People & Conventions
-[Who's involved, roles, how we work, standards and naming conventions]
-
-## Rejected Ideas
-[What was decided against and why — prevents relitigating]
-
-## Open Questions
-[Unsettled things, active debates, decisions pending]
+## Last 5 Decisions
+[most recent 5 decisions inline — date | decision | why]
 ```
 
-Populate every section from the interview answers. Be dense and specific — this file is for Claude to read, not humans. Use bullet points, not prose. Leave no section empty; use "—" if genuinely nothing to add.
-
-### B — Source Docs (human-readable layer)
-
-Create one doc/page per major section that has enough content to warrant its own page:
-
-- "Company Brain — Stack & Architecture" (full detail on every system)
-- "Company Brain — Decision Log" (full reasoning behind every decision)
-- "Company Brain — Projects" (full status and history per project)
-
-Add links from the context file to each source doc so Claude can fetch depth on demand.
+Be dense and specific — this file is for Claude to read, not humans. Use bullet points, not prose. Leave no section empty; use "—" if genuinely nothing to add.
 
 ---
 
@@ -186,17 +205,20 @@ Write `config.json` to the plugin folder:
 
 ```json
 {
-  "platform": "notion|drive|confluence",
-  "brain_id": "page-or-file-id",
-  "brain_url": "https://...",
-  "brain_name": "Company Brain — Context",
-  "company_name": "...",
-  "installed_by": "...",
+  "platform": "notion",
+  "brain_id": "[root page id]",
+  "brain_url": "[root page url]",
+  "context_id": "[context page id]",
+  "context_url": "[context page url]",
+  "company_name": "[company name]",
+  "installed_by": "[user name from interview]",
   "installed_at": "YYYY-MM-DD",
   "teammates": []
 }
 ```
 
+`config.json` stores both `brain_id` (root) and `context_id` (the lean page Claude loads every session). Claude fetches `context_url` on session start, not the root.
+
 Confirm to the user:
 
-> "Company Brain is ready. Claude now has full context about [company name] in every session. Share the brain URL with your team: [url]. When a teammate installs this plugin, I'll find the brain automatically."
+> "Company Brain is ready. Claude now has full context about [company name] in every session. Share the brain URL with your team: [brain_url]. When a teammate installs this plugin, I'll find the brain automatically."
