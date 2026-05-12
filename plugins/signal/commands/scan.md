@@ -6,7 +6,8 @@ description: Run a scan now. Fetches your sources, scores signals against your l
 
 Run the signal now.
 
-Invokes the scanner skill: reads ~/Documents/Signal/lens.md, checks all sources,
-scores items, appends to ~/Documents/Signal/signals.jsonl, and rebuilds the Live Artifact dashboard.
+Invokes the scanner skill: detects OS to locate the Signal data directory, reads
+lens.md (and the data_dir path from its first line), checks all sources in sources.md,
+scores items, appends to signals.jsonl, and rebuilds the Live Artifact dashboard.
 
 Usage: /scan

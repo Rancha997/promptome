@@ -7,7 +7,7 @@ description: Full Signal onboarding in one session. Runs the lens builder interv
 Run the full Signal onboarding in one session.
 
 This command does three things in sequence without requiring any action between steps:
-1. Runs the lens builder interview
+1. Detects OS, creates the Signal data directory ($DATA_DIR), and runs the lens builder interview
 2. Creates your daily 8am scheduled scan task via /schedule
 3. Runs /scan once to fetch sources, score signals, and build your Live Artifact dashboard
 

@@ -6,11 +6,34 @@ description: Runs on first install. Interviews the user to build their personal 
 
 You are setting up Signal for the first time.
 
+## Step 0 — Detect data directory
+
+Before doing anything else, detect the operating system and set the data path.
+
+Run: `uname -s`
+
+- If output is `Darwin` (macOS):
+  `DATA_DIR="$HOME/Library/Application Support/Claude/signal"`
+
+- If output starts with `MINGW`, `MSYS`, or `Windows`:
+  `DATA_DIR="$APPDATA/Claude/signal"`
+  (expand `%APPDATA%` — typically `C:\Users\[username]\AppData\Roaming`)
+
+- If output is `Linux`:
+  `DATA_DIR="$HOME/.config/Claude/signal"`
+
+Create the directory:
+```
+mkdir -p "$DATA_DIR"
+```
+
+Store the resolved absolute path. All subsequent file operations use `$DATA_DIR`.
+
 ## What you are building
 
 Two files that the scanner reads on every run:
-- `~/Documents/Signal/lens.md` — the personal scoring lens
-- `~/Documents/Signal/sources.md` — the sources and queries to monitor
+- `$DATA_DIR/lens.md` — the personal scoring lens
+- `$DATA_DIR/sources.md` — the sources and queries to monitor
 
 ## Interview
 
@@ -26,9 +49,19 @@ Ask follow-up questions if answers are vague — specific answers produce better
 
 ## Writing lens.md
 
-After the interview, create `~/Documents/Signal/` if it doesn't exist, then write `~/Documents/Signal/lens.md` with these sections:
+After the interview, write `$DATA_DIR/lens.md`. The **first line** must be the resolved data directory path:
+
+```
+data_dir: /resolved/absolute/path/here
+```
+
+This line is how the scanner and other skills locate all Signal files without re-running OS detection. Use the actual expanded absolute path — no variables, no `~`.
+
+Full lens.md structure:
 
 ```markdown
+data_dir: /resolved/absolute/path/here
+
 # Signal Lens — [User's name or context]
 Last updated: YYYY-MM-DD
 
@@ -56,7 +89,7 @@ Last updated: YYYY-MM-DD
 
 ## Writing sources.md
 
-Write `~/Documents/Signal/sources.md` with concrete sources derived from the interview:
+Write `$DATA_DIR/sources.md` with concrete sources derived from the interview:
 
 ```markdown
 # Signal Sources
@@ -96,12 +129,16 @@ When `/schedule` runs, provide:
 ```
 Run the Signal daily scanner.
 
-1. Read ~/Documents/Signal/lens.md for scoring criteria
-2. Read ~/Documents/Signal/sources.md for sources to check
-3. Read ~/Documents/Signal/signals.jsonl — extract existing IDs for deduplication
-4. Fetch each source using the tool routing in sources.md
-5. Score each candidate 0-100 against lens.md — discard below 40
-6. Append qualifying signals to ~/Documents/Signal/signals.jsonl (one JSON line each, append only)
-7. Write ~/Documents/Signal/run-status.md with scan summary
-8. Read full signals.jsonl, parse all lines, rebuild Signal dashboard Live Artifact with all signals injected as const SIGNALS = [...] in the HTML
+1. Detect OS: run `uname -s`. Derive DATA_DIR:
+   - Darwin → $HOME/Library/Application Support/Claude/signal
+   - MINGW/MSYS/Windows → $APPDATA/Claude/signal
+   - Linux → $HOME/.config/Claude/signal
+2. Read $DATA_DIR/lens.md — first line contains "data_dir: /absolute/path". Use that path as the canonical DATA_DIR for all remaining steps.
+3. Read $DATA_DIR/sources.md for sources to check
+4. Read $DATA_DIR/signals.jsonl — extract existing IDs for deduplication
+5. Fetch each source using the tool routing in sources.md
+6. Score each candidate 0-100 against lens.md — discard below 40
+7. Append qualifying signals to $DATA_DIR/signals.jsonl (one JSON line each, append only)
+8. Write $DATA_DIR/run-status.md with scan summary
+9. Read full signals.jsonl, parse all lines, rebuild Signal dashboard Live Artifact with all signals injected as const SIGNALS = [...] in the HTML
 ```

@@ -6,7 +6,8 @@ description: Rebuild your Signal dashboard with the latest scan data. Use if you
 
 Rebuilds your Signal dashboard artifact from the current signals.jsonl data.
 
-Claude reads ~/Documents/Signal/signals.jsonl and ~/Documents/Signal/run-status.md
-and rebuilds the Live Artifact with all current data injected.
+Claude detects OS to locate the Signal data directory, then reads signals.jsonl
+and run-status.md from $DATA_DIR and rebuilds the Live Artifact with all current
+data injected.
 
 Usage: /refresh-signal

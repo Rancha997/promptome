@@ -8,8 +8,9 @@ You are running the daily Signal scan.
 
 ## File paths
 
-All files live in `~/Documents/Signal/`:
-- `lens.md` — your personal scoring lens (written by lens builder)
+All Signal files live in `DATA_DIR` — an OS-specific path read from the first line of `lens.md`. Do not hardcode any path.
+
+- `lens.md` — your personal scoring lens (written by lens builder); first line is `data_dir: /absolute/path`
 - `sources.md` — list of sources and queries to check
 - `signals.jsonl` — append-only scored signals, one JSON object per line
 - `run-status.md` — overwritten each run, system health summary
@@ -18,9 +19,19 @@ All files live in `~/Documents/Signal/`:
 
 ### 1. Read context
 
-- Read `~/Documents/Signal/lens.md` — this is the scoring filter. Everything is scored against it.
-- Read `~/Documents/Signal/sources.md` — the list of sources, queries, and tool routing.
-- Read `~/Documents/Signal/signals.jsonl` — extract the set of existing IDs (sha1 of url, first 12 chars). Use this set to skip duplicates before spending tokens on scoring.
+**Determine DATA_DIR first:**
+
+Run `uname -s` to detect the OS, then derive the initial path:
+- `Darwin` → `$HOME/Library/Application Support/Claude/signal`
+- starts with `MINGW`, `MSYS`, or `Windows` → `$APPDATA/Claude/signal`
+- `Linux` → `$HOME/.config/Claude/signal`
+
+Read the first line of `$DATA_DIR/lens.md`. It must be `data_dir: /absolute/path`. Extract that absolute path and use it as the canonical `DATA_DIR` for all remaining file operations.
+
+**Then read:**
+- `$DATA_DIR/lens.md` — this is the scoring filter. Everything is scored against it.
+- `$DATA_DIR/sources.md` — the list of sources, queries, and tool routing.
+- `$DATA_DIR/signals.jsonl` — extract the set of existing IDs (sha1 of url, first 12 chars). Use this set to skip duplicates before spending tokens on scoring.
 
 If any of these files don't exist, stop and tell the user:
 "Signal isn't set up yet. Run /setup-signal to configure your lens and sources."
