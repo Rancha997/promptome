@@ -1,121 +1,107 @@
 ---
-description: Runs on first install. Interviews the user to build their personal opportunity lens and configure sources.
+description: Runs on first install. Interviews the user to build their personal opportunity lens, configure sources, and set up the daily scheduled scan.
 ---
 
-# Lens Builder Skill
+# Signal Lens Builder
 
-This skill runs once on first install. It interviews the user to understand their work, goals, and interests, then writes their personal lens — the scoring filter used by every future scan.
+You are setting up Signal for the first time.
 
-## Auto-invoke
+## What you are building
 
-At the start of every session:
+Two files that the scanner reads on every run:
+- `~/Documents/Signal/lens.md` — the personal scoring lens
+- `~/Documents/Signal/sources.md` — the sources and queries to monitor
 
-1. Check if `~/Documents/Signal/lens.md` exists.
-2. If it does NOT exist → greet the user, explain the plugin, and immediately invoke this skill to start the onboarding interview.
-3. If it DOES exist → greet the user briefly and confirm they're ready to scan. Show `/scan` and `/lens` as available commands.
+## Interview
 
-Do not scan without a lens. Do not write any signals without reading the lens first.
-
-## When to Invoke
-
-Invoke this skill automatically when `~/Documents/Signal/lens.md` does not exist. The user should not need to ask for it.
-
-## Interview Process
-
-Interview the user one question at a time, conversationally. Do not dump all questions at once. Listen carefully — follow up if an answer is vague. The goal is to build a precise, actionable lens, not just collect surface-level keywords.
-
-Ask these questions in order, waiting for the user's response before asking the next:
+Ask these questions one at a time. Wait for each answer before asking the next.
+Ask follow-up questions if answers are vague — specific answers produce better signals.
 
 1. "What are you working on right now? Describe your active projects briefly."
-
-2. "What kind of opportunities matter most to you — new tools, market gaps, techniques, competitors, job signals, funding news?"
-
-3. "What domains or topics should the scanner focus on? Be specific — e.g. 'Claude MCP ecosystem', 'n8n community', 'indie SaaS', 'AI infrastructure'."
-
+2. "What kinds of opportunities matter most to you — new tools, techniques, market gaps, competitors, job signals, funding news, community discussions?"
+3. "Which specific domains or topics should the scanner focus on? Be specific — e.g. 'Claude MCP ecosystem', 'n8n community', 'indie SaaS founders', 'AI infrastructure'."
 4. "What sources do you already follow? And where do you wish you had more coverage?"
+5. "What should the scanner ignore completely? Topics, content types, or noise you always skip."
+6. "What does a perfect signal look like to you? Give me one concrete example of something you'd be glad you caught."
 
-5. "What should the scanner ignore completely? Topics, types of content, or noise you always skip."
+## Writing lens.md
 
-6. "What does a perfect signal look like to you — give me one example of the kind of thing you'd be glad you caught."
-
-After each answer, briefly acknowledge what you heard and confirm your understanding if anything is ambiguous. Only proceed to the next question when you have a usable answer.
-
-## Writing the Output
-
-Create `~/Documents/Signal/` if it does not exist before writing any files.
-
-Once you have answers to all six questions, do the following:
-
-### Step 1: Write ~/Documents/Signal/lens.md
-
-Write a structured personal lens document. Use this exact section structure:
+After the interview, create `~/Documents/Signal/` if it doesn't exist, then write `~/Documents/Signal/lens.md` with these sections:
 
 ```markdown
-# Personal Opportunity Lens
-
-## Identity & Assets
-[Who the user is, what they've built, their domain expertise, what they're known for. Infer from their answers.]
-
-## Active Projects
-[Bullet list of what they're working on right now. Use their exact words where possible.]
-
-## Opportunity Categories (Ranked)
-[Numbered list from most to least important, based on what they said. Each item: category name + one-line description of what counts.]
-
-1. [Category] — [what counts as this type of opportunity for this user]
-2. ...
-
-## What to Ignore
-[Bullet list of topics, content types, or noise patterns the user explicitly wants skipped. Be specific.]
-
-## Scoring Guidance
-[3–5 sentences that describe how to weight signals for this user. What pushes a score up? What caps it low? What makes something a 90+?]
-
-## Example Perfect Signal
-[One concrete example of what a 90+ score looks like for this user, in their own terms. This is the calibration anchor.]
-```
-
-### Step 2: Write ~/Documents/Signal/sources.md
-
-Write a sources file with specific, targeted queries for each topic area the user mentioned. Format:
-
-```markdown
-# Scanner Sources
-
+# Signal Lens — [User's name or context]
 Last updated: YYYY-MM-DD
 
-## [Domain/Topic Name]
+## Identity & Context
+[Who this person is and what they're building — 3-5 bullets]
 
-**Query:** [exact search query]
-**Routing:** web search
-**Frequency:** daily
-**Notes:** [any filtering or context — e.g. "prioritize last 24h", "exclude job board results"]
+## Active Projects
+[List of active projects — one line each, what they are and why they matter for scoring]
 
----
-[repeat for each source]
+## Opportunity Categories
+[Ranked list of what matters most — specific, not generic]
+
+## Sources to Monitor
+[List of sources from the interview]
+
+## What to Ignore
+[Explicit ignore list — topics, content types, noise]
+
+## Scoring Guidance
+[Specific guidance on what scores high vs low for this person]
+
+## Example Perfect Signal
+[The concrete example the user gave — this is the benchmark]
 ```
 
-Derive sources from what the user said — their existing follows, desired coverage gaps, and specific domains. Aim for 8–15 sources. More is not better — precision over volume.
+## Writing sources.md
 
-### Step 3: Confirm and summarize
+Write `~/Documents/Signal/sources.md` with concrete sources derived from the interview:
 
-After writing both files:
-1. Confirm both files were written successfully.
-2. Show the user a brief summary: their top 3 opportunity categories and how many sources are configured.
-3. Proceed immediately to the **After the Interview** steps below — do not stop here.
+```markdown
+# Signal Sources
+Last updated: YYYY-MM-DD
 
-## After the Interview
+## Daily sources
+[Each source with: name, what to search/fetch, tool to use]
 
-After writing `~/Documents/Signal/lens.md` and `~/Documents/Signal/sources.md`:
-1. Run `/schedule` to create the daily 8am scan task.
-2. Run `/scan` immediately to fetch sources, score signals, and build the Live Artifact dashboard.
-3. Confirm to the user: "Signal is set up. Your lens is configured, your 8am daily scan is scheduled, and here's your first dashboard."
+## Weekly sources
+[Slower-moving sources checked less frequently]
 
-Do all three in the same session. Do not ask the user to do anything between steps.
+## Tool routing
+- Reddit sources: web_search with site:reddit.com
+- HN: web_fetch https://hn.algolia.com/api/v1/search?tags=story&numericFilters=created_at_i>{epoch}
+- Specific URLs: web_fetch directly
+- Everything else: web_search
+```
 
-## Important
+## After writing both files
 
-- Write to `~/Documents/Signal/lens.md` and `~/Documents/Signal/sources.md`. Create `~/Documents/Signal/` if it does not exist.
-- Do not start scanning during this skill. Lens-building and scanning are separate steps handled by the "After the Interview" section above.
-- If the user gives vague or generic answers (e.g. "AI stuff"), ask a focused follow-up before moving on.
-- The lens is a living document — the user can update it later with `/lens` or inline in chat.
+Confirm:
+"Your lens is configured. Here's what Signal will look for: [2-3 sentence summary of the lens]"
+
+Then immediately:
+
+1. Run `/schedule` to create the daily 8am task with full scanner instructions
+2. Run `/scan` once to fetch sources, score the first batch, and build the dashboard
+3. Confirm: "Signal is running. Your first scan is complete — here's your dashboard."
+
+## Creating the scheduled task
+
+When `/schedule` runs, provide:
+
+**Name:** Signal daily scan
+**Schedule:** Daily at 8:00 AM
+**Instructions:**
+```
+Run the Signal daily scanner.
+
+1. Read ~/Documents/Signal/lens.md for scoring criteria
+2. Read ~/Documents/Signal/sources.md for sources to check
+3. Read ~/Documents/Signal/signals.jsonl — extract existing IDs for deduplication
+4. Fetch each source using the tool routing in sources.md
+5. Score each candidate 0-100 against lens.md — discard below 40
+6. Append qualifying signals to ~/Documents/Signal/signals.jsonl (one JSON line each, append only)
+7. Write ~/Documents/Signal/run-status.md with scan summary
+8. Read full signals.jsonl, parse all lines, rebuild Signal dashboard Live Artifact with all signals injected as const SIGNALS = [...] in the HTML
+```
