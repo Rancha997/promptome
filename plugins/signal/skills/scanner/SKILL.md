@@ -107,54 +107,65 @@ Overwrite `~/Documents/Signal/run-status.md` with a brief run summary:
 
 ---
 
-## Step 6: Build the Live Artifact Dashboard
+## Step 6 — Signal Dashboard Artifact
 
-After writing the JSONL, build a Live Artifact (React component) that reads from `~/Documents/Signal/signals.jsonl` and renders the dashboard. The artifact should be a self-contained HTML/React component.
+The Signal dashboard is a Live Artifact that Claude rebuilds with fresh data
+on each scan. Claude reads signals.jsonl and injects the data as JSON into
+the artifact — the artifact does not read files itself.
 
-### Dashboard Spec
+### How to build it
+
+1. Read `~/Documents/Signal/signals.jsonl` — parse every line as a JSON object
+2. Read `~/Documents/Signal/run-status.md` — extract last run timestamp and counts
+3. Build a Live Artifact (HTML + embedded JavaScript) with the signal data
+   injected as a const JSON array at the top of the script
+4. The artifact renders from that const — no file reads, no fetch calls
+
+### When to rebuild
+
+Rebuild the artifact on every scan run after writing to signals.jsonl.
+This is the correct pattern — Claude reads the file, Claude injects the data,
+the artifact renders it. The "live" part is that Claude always reads fresh
+data before building.
+
+### Artifact spec
+
+```html
+<script>
+const SIGNALS = [/* Claude injects the full parsed signals array here */];
+const LAST_RUN = "/* Claude injects run timestamp here */";
+const RUN_STATS = {/* new signals count, sources checked */};
+</script>
+```
 
 **Header**
 
 - Title: "Signal"
-- Last run date/time (from ~/Documents/Signal/run-status.md)
-- Total signals collected (all time)
-- Count of items above 80 this week
+- Last run timestamp from `LAST_RUN`
+- Total signal count
 
 **Filter Bar**
 
-- Time filter: All | Today | This week
-- Run filter: dropdown showing distinct run dates from signals.jsonl, newest first, format "May 10 · 8:02am". Default: most recent run. "All runs" option at the top.
-- Category filter: All | technique | gap | pattern | actionable | insight
-- Score filter: 80+ | 60+ | All
+- Run: dropdown of distinct `run_date` values from `SIGNALS`, newest first, format "May 10 · 8:02am". Default: most recent. "All runs" at top. When a specific run is selected, only show signals where `run_date` matches.
+- Category: All | technique | gap | pattern | actionable | insight
+- Score: 80+ | 60+ | All
 
-When a specific run is selected, only show signals where run_date matches that run. The run dropdown should show the date and time of each unique run, derived from the run_date field in signals.jsonl combined with the timestamp in run-status.md.
+**Signal Cards** — sorted by score descending, filtered by active filters
 
-**Signal Cards** — sorted by score descending
-Each card shows:
-
-- Score badge — color: 80+ = teal `#2A6B6B`, 60–79 = amber `#B45309`, 40–59 = grey `#6B7280`
+- Score badge — 80+ = teal `#2A6B6B`, 60–79 = amber `#B45309`, 40–59 = grey `#6B7280`
 - Title as a clickable link (opens in new tab)
 - Category tag
-- `connects_to` field (italic, smaller)
-- `reason` (1–2 sentences)
-- Action badge (read | save | build | reply | ignore)
-- Decay badge (hours | days | weeks)
+- `connects_to` (italic, smaller)
+- `reason`
+- Action badge + Decay badge
 - Source name + date
-
-**Refresh Button**
-
-- Label: "↻ Refresh"
-- Position: top-right of header, always visible
-- On click: re-reads ~/Documents/Signal/signals.jsonl and ~/Documents/Signal/run-status.md from disk and redraws the entire dashboard
-- Show "Last refreshed: X seconds ago" next to the button, updating every 30 seconds
-- On load: always auto-refresh once on open so the user never sees stale data
-
-The auto-refresh on load is the key fix — every time the artifact opens it immediately re-reads the JSONL before rendering, so the user always sees the latest scan data without having to manually click refresh.
 
 **Empty State**
 
-- When no signals match the current filters: "No signals yet. Type /scan to run your first scan."
-- When filters are active but no matches: "No signals match the current filters."
+- No signals in data: "No signals yet. Type /scan to run your first scan."
+- Filters active but no matches: "No signals match the current filters."
+
+**No refresh button** — Claude rebuilds the artifact on every scan, so there is no stale data problem. A refresh button adds complexity without benefit in this model.
 
 **Design Principles**
 
